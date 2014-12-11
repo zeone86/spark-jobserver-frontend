@@ -23,6 +23,10 @@ When you are done, create a production ready version of the JS bundle inside the
 
     gulp build
 
+If you want to serve the application directly from the JobServer, you will need to run the following task, that uses different paths:
+
+    gulp build-jobserver
+
 License
 -------
 
