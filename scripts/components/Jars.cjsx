@@ -40,7 +40,6 @@ module.exports = React.createClass
     success: false
 
   render: ->
-    if (toPairs(@state.jars).length == 0) then return null
     jarList = compose(
       map((jar) -> <Jar jar={ jar } key={ jar[0] }/>)
       sortBy(head)
