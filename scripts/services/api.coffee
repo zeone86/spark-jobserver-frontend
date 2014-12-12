@@ -31,7 +31,7 @@ fixJson = interceptor
     if resp.status.code == 200 then { entity: resp.entity, status: resp.status }
 
 client = rest.wrap(mime).wrap(fixJson).wrap(errorCode, code: 500)
-baseUrl = 'http://aletta:8090'
+baseUrl = ''
 
 module.exports =
   jobs: ->
