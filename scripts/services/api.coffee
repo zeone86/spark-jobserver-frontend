@@ -16,6 +16,7 @@ rest = require('rest')
 mime = require('rest/interceptor/mime')
 errorCode = require('rest/interceptor/errorCode')
 interceptor = require('rest/interceptor')
+binarySend = require('./binary-send.coffee')
 
 identity = (x) -> x
 
@@ -29,8 +30,8 @@ fixJson = interceptor
   error: (resp, config, meta) ->
     if resp.status.code == 200 then { entity: resp.entity, status: resp.status }
 
-client = rest.wrap(mime).wrap(fixJson).wrap(errorCode, code: 500);
-baseUrl = ''
+client = rest.wrap(mime).wrap(fixJson).wrap(errorCode, code: 500)
+baseUrl = 'http://aletta:8090'
 
 module.exports =
   jobs: ->
@@ -52,8 +53,8 @@ module.exports =
   jars: ->
     client(path: "#{ baseUrl }/jars").then (response) -> response.entity
 
-  jarLoad: (appName, jar) ->
-    client(path: "#{ baseUrl }/jars/#{ appName }", entity: jar)
+  jarLoad: (appName, jar, type) ->
+    binarySend("#{ baseUrl }/jars/#{ appName }", jar, type)
 
   contexts: ->
     client(path: "#{ baseUrl }/contexts").then (response) -> response.entity

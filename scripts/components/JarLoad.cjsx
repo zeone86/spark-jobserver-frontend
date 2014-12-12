@@ -30,6 +30,7 @@ module.exports = React.createClass
   getInitialState: ->
     appName: ''
     file: null
+    fileType: null
     error: null
 
   submit: (event) ->
@@ -39,15 +40,16 @@ module.exports = React.createClass
     if not @state.file
       @setError('No file selected')
       return
-    api.jarLoad(@state.appName, @state.file).then @handleResponse
+    api.jarLoad(@state.appName, @state.file, @state.fileType).then @handleResponse
 
   setError: (text) -> @setState(error: text)
 
   handleFile: (event) ->
     file = event.target.files[0]
+    type = file.type
     reader = new FileReader()
     reader.onload = (upload) =>
-      @setState(file: upload.target.result)
+      @setState(file: upload.target.result, fileType: type)
     reader.readAsBinaryString(file)
 
   handleResponse: (response) ->
@@ -55,6 +57,7 @@ module.exports = React.createClass
       jarLoaded.dispatch true
       @setError(null)
     else
+      console.log response
       @setError(response.entity.result)
 
   render: ->
