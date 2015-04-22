@@ -27,6 +27,11 @@ If you want to serve the application directly from the JobServer, you will need 
 
     gulp build-jobserver
 
+TODO
+1、设置job为sync情况下的展示方式
+2、结果数据json解析方式
+
+	
 License
 -------
 
