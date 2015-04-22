@@ -43,12 +43,13 @@ module.exports =
   jobConfig: (id) ->
     client(path: "#{ baseUrl }/jobs/#{ id }/config").then (response) -> response.entity
 
-  jobSubmit: (config, appName, classPath, context) ->
+  jobSubmit: (config, appName, classPath, context,sync) ->
     params =
       appName: appName
       classPath: classPath
     if context then params.context = context
-    client(path: "#{ baseUrl }/jobs", entity: config, params: params)
+    if sync then params.sync = sync
+    client(path: "#{ baseUrl }/jobs",  method: 'POST',entity: config, params: params)
 
   jars: ->
     client(path: "#{ baseUrl }/jars").then (response) -> response.entity
@@ -59,11 +60,12 @@ module.exports =
   contexts: ->
     client(path: "#{ baseUrl }/contexts").then (response) -> response.entity
 
-  createContext: (name, cpu, memory, unit) ->
+  createContext: (name, cpu, memory, unit,context_factory) ->
     unitShort = unit[0].toUpperCase()
     params = {}
     if cpu then params['num-cpu-cores'] = cpu
     if memory then params['memory-per-node'] = "#{ memory }#{ unitShort }"
+    if context_factory then params['context-factory']= context_factory
     client(path: "#{ baseUrl }/contexts/#{ name }", method: 'POST', params: params)
 
   deleteContext: (name) ->

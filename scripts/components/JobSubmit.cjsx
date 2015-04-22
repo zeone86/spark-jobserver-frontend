@@ -24,6 +24,12 @@ Select = require('react-select')
 
 api = require('../services/api.coffee')
 
+
+sync = [
+  { value: 'true', label: 'True' }
+  { value: 'false', label: 'False' }
+]
+
 makeOption = (param) ->
   value: param
   label: param
@@ -41,6 +47,7 @@ module.exports = React.createClass
     context: null
     config: ''
     classPath: null
+    sync: 'false'
     error: null
     success: null
     applications: []
@@ -49,6 +56,8 @@ module.exports = React.createClass
   changeApplication: (app) -> @setState(application: app)
 
   changeContext: (context) -> @setState(context: context)
+
+  changeSync: (sync) -> @setState(sync: sync)
 
   backtoJobs: ->
     @transitionTo('jobs')
@@ -60,7 +69,7 @@ module.exports = React.createClass
     if not @state.application
       @setState(error: 'Missing application')
       return
-    api.jobSubmit(@state.config, @state.application, @state.classPath, @state.context).then @handleResponse
+    api.jobSubmit(@state.config, @state.application, @state.classPath, @state.context,@state.sync).then @handleResponse
 
   handleResponse: (response) ->
     if response.status.code == 202
@@ -80,7 +89,7 @@ module.exports = React.createClass
       { success }
 
       <Row>
-        <Col md={4}>
+        <Col md={2}>
           <Input type="textarea"
             label='Configuration'
             valueLink={ @linkState('config') } />
@@ -103,6 +112,12 @@ module.exports = React.createClass
             <Select value={ @state.context } options={ @state.contexts } onChange={ @changeContext } />
           </div>
         </Col>
+          <Col md={1}>
+                  <div className="form-group">
+                    <label className="control-label">Sync</label>
+                    <Select value={ @state.sync } options={ sync } onChange={ @changeSync } />
+                  </div>
+                </Col>
       </Row>
       <Row>
         <Col md={4}>

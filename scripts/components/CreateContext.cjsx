@@ -30,6 +30,11 @@ units = [
   { value: 'M', label: 'Mb' }
   { value: 'G', label: 'Gb' }
 ]
+context_factory = [
+      { value: 'spark.jobserver.context.DefaultSparkContextFactory', label: 'Default' }
+      { value: 'spark.jobserver.context.SQLContextFactory', label: 'SQL' }
+]
+
 
 module.exports = React.createClass
   mixins: [React.addons.LinkedStateMixin]
@@ -38,6 +43,7 @@ module.exports = React.createClass
     cpu: null
     memory: null
     memoryUnit: 'M'
+    context_factory:'spark.jobserver.context.DefaultSparkContextFactory'
     error: null
 
   isInteger: (text) -> parseInt(text).toString() == text
@@ -48,10 +54,12 @@ module.exports = React.createClass
 
   changeUnit: (unit) -> @setState(memoryUnit: unit)
 
+  changeContext: (context) -> @setState(context_factory: context)
+
   submit: ->
     if @state.cpu and not @isInteger(@state.cpu) then return
     if @state.memory and not @isInteger(@state.memory) then return
-    api.createContext(@state.contextName, @state.cpu, @state.memory, @state.memoryUnit).then @handleResponse
+    api.createContext(@state.contextName, @state.cpu, @state.memory, @state.memoryUnit,@state.context_factory).then @handleResponse
 
   handleResponse: (response) ->
     if response.status.code == 200
@@ -95,6 +103,12 @@ module.exports = React.createClass
             <Select value={ @state.memoryUnit } options={ units } onChange={ @changeUnit } />
           </div>
         </Col>
+        <Col md={2}>
+            <div className="form-group">
+                <label className="control-label">ContextFactory</label>
+                <Select value={ @state.context_factory } options={ context_factory } onChange={ @changeContext } />
+            </div>
+         </Col>
       </Row>
       <Row>
         <Col md={4}>
